@@ -4,7 +4,10 @@ import Home from './components/home';
 
 function App() {
   return (
-    <Home />
+    <div className='container'>
+
+      <Home />
+    </div>
   );
 }
 

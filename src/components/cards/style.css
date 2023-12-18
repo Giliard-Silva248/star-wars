@@ -1,0 +1,30 @@
+*{
+    border: 1px red solid;
+}
+.container-card{
+    border: 3px solid yellow;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 30%;
+    height: 55%;
+}
+
+.container-img{
+    display: flex;
+    justify-content: center;
+}
+
+
+img{
+    max-width: 60%;
+
+}
+
+.info{
+    display: flex;
+    justify-content: space-evenly;
+
+    width: 100%;
+}

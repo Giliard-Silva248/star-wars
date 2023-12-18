@@ -1,32 +1,16 @@
-import React, {Component} from "react";
-import api from "../../services/api";
-import { render } from "@testing-library/react";
+import React from "react";
+import './style.css'
+import minhaImg from '../../img/teste.jpg'
 
-class Card extends Component{
+export default function Card(){
+    return(
 
-    state={
-        peaple: []
-    }
-
-    async componentDidMount(){
-        const response = await api.get('')
-
-
-        this.setState({peaple: response.data})
-    }
-
-    render(){
-
-        const {peaple} = this.state
-        return(
-            <div>
-                <p>olá</p>
-                {console.log(peaple)}
-                
+        <div className="container-card">
+            <h3>NOME</h3>
+            <div className="container-img">
+                <img src={minhaImg} alt="Minha Imagem" />
             </div>
-        )
-    }
+            <div className="info"><span>Nascimento</span> <span>Gênero</span></div>
+        </div>
+    )
 }
-
-
-export default Card
