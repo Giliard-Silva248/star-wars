@@ -5,8 +5,6 @@ export default function Navbar(){
     return (
         <nav className="nav">
             <h2 className="title">POKEDEX</h2>
-
-            <input type="search" className="input"/>
         </nav>
     )
 }

@@ -3,75 +3,84 @@ import axios from 'axios';
 
 import './style.css'
 
-const PokeAPIExample = () => {
-  const [pokemonData, setPokemonData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PokemonList = () => {
+  const [pokemonList, PokemonList] = useState([]);
+  const [originalPokemonList, OriginalPokemonList] = useState([]);
+  const [loading, Loading] = useState(true);
+  const [textoBusca, TextoBusca] = useState("");
+  const [limit, setLimit] = useState(25); 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
-        setPokemonData(response.data.results);
-        setLoading(false);
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-        setLoading(false);
-      }
+    const fetchPokemonList = async () => {
+
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&off=0`);
+        const results = response.data.results;
+
+        const pokemonData = await Promise.all(
+          results.map(async (pokemon) => {
+            const pokemonInfo = await axios.get(pokemon.url);
+            return {
+              name: pokemon.name,
+              image: pokemonInfo.data.sprites.front_default,
+              type: pokemonInfo.data.types[0].type.name,
+            };
+          })
+        );
+
+        PokemonList(pokemonData);
+        OriginalPokemonList(pokemonData);
+        Loading(false);
+
     };
 
-    fetchData();
-  }, []);
+    fetchPokemonList();
+  }, [limit]);
 
-  const fetchPokemonImage = async (pokemonName) => {
-    try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-      return response.data.sprites.front_default;
-    } catch (error) {
-      console.error(`Erro ao buscar imagem de ${pokemonName}:`, error);
-      return null;
+  const buscaPokemon = (textoDigitado) => {
+    TextoBusca(textoDigitado);
+
+  
+    if (textoDigitado === '') {
+      PokemonList(originalPokemonList);
+    } else {
+      const filteredPokemon = originalPokemonList.filter((poke) =>
+        poke.name.toLowerCase().includes(textoDigitado.toLowerCase())
+      );
+      PokemonList(filteredPokemon);
     }
   };
 
-  const fetchAllPokemonImages = async () => {
-    const pokemonWithImages = [];
-    for (const pokemon of pokemonData) {
-      const imageUrl = await fetchPokemonImage(pokemon.name);
-      if (imageUrl) {
-        pokemonWithImages.push({ ...pokemon, imageUrl });
-      }
-    }
-    return pokemonWithImages;
+  const aumentarLimite = () => {
+    setLimit((prevLimit) => prevLimit + 25)
   };
 
-  useEffect(() => {
-    const fetchAndSetImages = async () => {
-      if (!loading && pokemonData.length > 0) {
-        const pokemonWithImages = await fetchAllPokemonImages();
-        setPokemonData(pokemonWithImages);
-      }
-    };
-
-    fetchAndSetImages();
-  }, [loading, pokemonData]);
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div>
-      {loading ? (
-        <p>Carregando...</p>
-      ) : (
-        <div className='container-card'>
-          <div className='container-poke'>
-            {pokemonData.map((pokemon, index) => (
-              <div key={index} className='card'>
-                <p>{pokemon.name}</p>
-                {pokemon.imageUrl && <img src={pokemon.imageUrl} alt={pokemon.name} />}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <input
+        type='text'
+        value={textoBusca}
+        onChange={(event) => buscaPokemon(event.target.value)}
+        className='input'
+        placeholder='Digite o nome do Pokemon'
+      />
+      <div className='container-card'>
+        <ul className='container-poke'>
+          {pokemonList.map((pokemon, index) => (
+            <li key={index} className='card'>
+              <h2>{pokemon.name}</h2>
+              <img src={pokemon.image} alt={pokemon.name} />
+              <p>Tipo: {pokemon.type}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <button onClick={aumentarLimite} className='btn'>Exibir mais</button>
     </div>
   );
 };
 
-export default PokeAPIExample;
+export default PokemonList;

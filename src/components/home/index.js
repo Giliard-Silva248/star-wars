@@ -5,14 +5,14 @@ import './style.css'
 
 import Navbar from "../navbar";
 import Footer from "../footer";
-import PokeAPIExample from "../cards";
+import PokemonInfo from "../cards";
 
 
 export default function Home(){
     return(
         <div className="container">
             <Navbar/>
-            <PokeAPIExample/>
+            <PokemonInfo/>
             <Footer />
         </div>
     )
