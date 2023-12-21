@@ -4,7 +4,7 @@ import './style.css'
 export default function Navbar(){
     return (
         <nav className="nav">
-            <h2 className="title">STAR WARS</h2>
+            <h2 className="title">POKEDEX</h2>
 
             <input type="search" className="input"/>
         </nav>
